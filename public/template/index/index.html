@@ -1,0 +1,83 @@
+{load href="__PLUGINS__/swiper/dist/css/swiper.min.css" /}	
+{load href="__PLUGINS__/lightbox2-dist/css/lightbox.min.css" /}
+{load href="__CSS__/bres.css" /}	
+<div class="container container-main">
+	<div class="swiper-container">
+
+	    <div class="swiper-wrapper">
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57fc360d42c0f.jpg" alt="实景图1">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57fc3614ea067.jpg" alt="实景图1">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57ddeaef06a9b.jpg" alt="实景图1">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57d6507582f50.jpg" alt="关于我们">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57f8932e510c7.jpg" alt="最新动态">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57d64d98b6109.jpg" alt="奋斗历程">
+	        </div>
+	        <div class="swiper-slide">
+	        	<img src="__IMAGES__/indexswp/57d622f486b72.jpg" alt="公益活动">
+	        </div>
+	    </div>
+	    <div class="swiper-pagination"></div>
+	</div>
+
+	<div class="menus-top">
+		<ul>
+			<li class="menus-lsit" id="mitem1">menu001</li>
+			<li class="menus-lsit" id="mitem2">menu002</li>
+			<li class="menus-lsit" id="mitem3">menu003</li>
+			<li class="menus-lsit" id="mitem4">menu004</li>
+			<li class="menus-lsit" id="mitem5">menu005</li>
+			<li class="menus-lsit" id="mitem6">menu006</li>
+			<li class="menus-lsit" id="mitem7">menu007</li>
+		</ul>
+	</div>
+	<div id="masonry" class="masonry-grid   contents">
+		<div class="grid-sizer"></div>
+		{foreach name="main_data" item="vo" key="k" empty="$empty" key='k'}
+	  	<div class="grid-item thumbnail grid-xg" data-id="{$vo.id}">
+	  		<div class="img-xg">
+	            <a href="{$image_site.$vo.img}" data-lightbox="roadtrip" data-title="{$vo.title}">
+					<img src="{$image_site.$vo.img_s}" alt="{$vo.title}" class="thumbnail-img is-loading" onerror="this.src='/static/images/broken.png'">
+				</a>
+	        </div>
+	        <div class="caption">
+	            <div class="title">{$vo.title}</div>
+	            
+	            <div class="des-profile">
+                  	<div class="author">
+		            	<a target="_blank" href="/user?uid={$vo.user_id}">
+		            		<!-- {$Think.config.myconfig.image_site_main}模板中调用配置参数 -->
+		            		<img src="{$Think.config.myconfig.image_site_main . $vo.user_head}" alt="{$vo.user_name}" class="user_head_img ">
+		            		<span class="user_name">{$vo.user_name}</span>
+		            	</a>
+		            </div>
+		            <!--{$vo.time|strtotime|date='Y-m-d',###}标签中调用函数，从左到右依次执行-->
+		            <div class="dp_time">{:date('Y-m-d',strtotime($vo.time))}</div>
+	            </div>
+	           
+	        </div>
+	  	</div>
+		{/foreach}
+
+		
+	</div>
+	<div class="loading_plan"><i class="icon-spinner icon-spin icon-2x pull-left"></i></div>
+</div>
+
+{load href="__PLUGINS__/swiper/dist/js/swiper.min.js" /}
+{load href="__PLUGINS__/masonry/masonry.min.js" /}	
+{load href="__PLUGINS__/masonry/imagesloaded.pkgd.min.js" /}	
+{load href="__PLUGINS__/lightbox2-dist/js/lightbox.min.js" /}
+{load href="__PLUGINS__/jquery_lazyload/jquery.lazyload.min.js" /}
+{load href="__PLUGINS__/jquery_lazyload/jquery.scrollstop.min.js" /}
+{load href="__JS__/bres.js" /}	

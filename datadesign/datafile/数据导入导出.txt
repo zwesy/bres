@@ -1,0 +1,208 @@
+数据库数据的导入和导出
+受secure_file_priv配置项影响
+#限制导入导出，null时无法进行数据的导入导出，空时不限制，设置了目录则只能对该目录下的文件进行导入导出
+show variables like "secure_file_priv" 查看
+#--------------------------------------------------------------------------------------#
+导出：
+
+语法：
+
+	
+SELECT ... INTO OUTFILE 'file_name'
+        [CHARACTER SET charset_name]
+        [export_options]
+ 
+export_options:
+    [{FIELDS | COLUMNS}
+        [TERMINATED BY 'string']
+        [[OPTIONALLY] ENCLOSED BY 'char']
+        [ESCAPED BY 'char']
+    ]
+    [LINES
+        [STARTING BY 'string']
+        [TERMINATED BY 'string']
+    ]
+
+
+如:
+
+SELECT 
+	bres_user.account,
+	bres_user.`password`,
+	bres_user.telnumber,
+	bres_user.email,
+	bres_user.nicename,
+	bres_user.introduction,
+	bres_user.sex,
+	bres_user.regtime,
+	bres_user.birthday 
+FROM
+	bres_user
+LIMIT 100 INTO OUTFILE 'H:/phpapache/bres_user.txt' FIELDS TERMINATED BY ', ' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n';
+
+注意导出数据中控制用	\N 表示的
+
+#--------------------------------------------------------------------------------------#
+导入：
+
+语法：
+
+	load data  [low_priority] [local] infile '/path/file' [replace | ignore]
+	into table tbl_name
+	[fields
+	[terminated by't']
+	[OPTIONALLY] enclosed by '']
+	[escaped by'\' ]]
+	[lines terminated by'n']
+	[ignore number lines]
+	[(column_name,column_name2,...)]
+
+
+
+如:
+
+LOAD DATA LOW_PRIORITY INFILE 'H:/phpapache/www/bres/datadesign/datafile/user_into_sql.txt' REPLACE INTO TABLE bres_user CHARACTER
+SET utf8 FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' 
+(
+	bres_user.account,
+	bres_user.`password`,
+	bres_user.telnumber,
+	bres_user.email,
+	bres_user.nicename,
+	bres_user.introduction,
+	bres_user.sex,
+	bres_user.regtime,
+	bres_user.birthday
+)
+
+LOAD DATA LOW_PRIORITY INFILE 'H:/phpapache/mysql-5.6.24/uploade/dataAug-2-2018.csv' IGNORE INTO TABLE bres_products CHARACTER
+SET utf8 FIELDS TERMINATED BY '|' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' (
+	bres_products.productid,
+	bres_products.title,
+	bres_products.categoryid,
+	bres_products.create_date,
+	bres_products.expire,
+	bres_products.up_date,
+	bres_products.ownerid,
+	bres_products.total_num,
+	bres_products.current_num,
+	bres_products.promotion_sum,
+	bres_products.promotion_cur,
+	bres_products.`status`
+)
+
+提示：注意导入csv文件时需要注意文件的编码格式为 ANSI或utf-8 ,最好是以ANSI编码，可用notepad++转码一下
+
+参数：
+
+1.  如果你指定关键词low_priority，那么MySQL将会等到没有其他人读这个表的时候，才把插入数据。可以使用如下的命令： 
+	load data  low_priority infile "/home/mark/data sql" into table Orders;
+
+2. 如果指定local关键词，则表明从客户主机读文件。如果local没指定，文件必须位于服务器上
+
+3.replace和ignore关键词控制对现有的唯一键记录的重复的处理。如果你指定replace，新行将代替有相同的唯一键值的现有行。如果你指定ignore，跳过有唯一键的现有行的重复行的输入。如果你不指定任何一个选项，当找到重复键时，出现一个错误，并且文本文件的余下部分被忽略。例如：
+	load data  low_priority infile "/home/mark/data sql" replace into table Orders;
+
+4 分隔符
+	1.fields关键字指定了文件记段的分割格式，如果用到这个关键字，MySQL剖析器希望看到至少有下面的一个选项： 
+	terminated by 分隔符：意思是以什么字符作为分隔符,默认情况下是tab字符（\t） 
+	enclosed by 字段括起字符,默认'"';
+	escaped by 转义字符,默认的是反斜杠（backslash：\ ）  
+
+	例如：load data infile "/home/mark/Orders txt" replace into table Orders fields terminated by',' enclosed by '"';
+
+	2.lines 关键字指定了每条记录的分隔符默认为'\n'即为换行符
+	如果两个字段都指定了那fields必须在lines之前。如果不指定fields关键字缺省值与如果你这样写的相同： fields terminated by'\t' enclosed by ’ '' ‘ escaped by'\\'
+	如果你不指定一个lines子句，缺省值与如果你这样写的相同： lines terminated by'\n'
+	
+	例如：load data infile "/jiaoben/load.txt" replace into table test fields terminated by ',' lines terminated by '/n';
+
+5.load data infile 可以按指定的列把文件导入到数据库中。 
+当我们要把数据的一部分内容导入的时候，，需要加入一些栏目（列/字段/field）到MySQL数据库中，以适应一些额外的需要。
+比方说，我们要从Access数据库升级到MySQL数据库的时候
+
+下面的例子显示了如何向指定的栏目(field)中导入数据： 
+load data infile "/home/Order txt" into table Orders(Order_Number, Order_Date, Customer_ID);
+
+6  当在服务器主机上寻找文件时，服务器使用下列规则： 
+（1）如果给出一个绝对路径名，服务器使用该路径名。 
+（2）如果给出一个有一个或多个前置部件的相对路径名，服务器相对服务器的数据目录搜索文件。  
+（3）如果给出一个没有前置部件的一个文件名，服务器在当前数据库的数据库目录寻找文件。 
+例如： /myfile txt”给出的文件是从服务器的数据目录读取，而作为“myfile txt”给出的一个文件是从当前数据库的数据库目录下读取。
+ 
+ 
+注意：字段中的空值用\N表示
+
+LOAD DATA INFILE 一直被认为是MySQL很强大的一个数据导入工具，因为他速度非常的快。
+不过有几个问题一定要注意
+1、编码。
+2、灵活导入导出。
+
+注意：/path/file 中的 path 需要有mysql的权限，否则会报错，因此一般存放于数据库数据目录下
+
+#--------------------------------------------------------------------------------------#
+mysqlimport 可执行文件来导入导出
+
+语法：
+
+	mysqlimport -u root -pPassword [--local] dbname filename.txt [OPTION]
+
+参数：
+
+	“Password”参数是root用户的密码，必须与-p选项紧挨着；
+	“--local”是在本地计算机中查找文本文件时使用的（指定 --local 后，文本文件可以放在任何地方进行导入，否则只能放在mysql的data目录下）；
+	“dbname”参数表示数据库的名称；
+	“filename.txt”参数指定了文本文件的路径和名称，文件里的数据插入到文件名去掉后缀后剩余名字对应的表中；
+	“OPTION”为可选参数选项，其常见的取值有：
+
+		--fields-terminated-by=字符串：设置字符串为字段之间的分隔符，可以为单个或多个字符。默认值为制表符“\t”。
+		--fields-enclosed-by=字符：设置字符来括住字段的值，只能为单个字符。
+		--fields-optionally-enclosed-by=字符：设置字符括住CHAR、VARCHAR和TEXT等字符型字段，只能为单个字符。
+		--fields-escaped-by=字符：设置转义字符，默认值为反斜线“\”。
+		--lines-terminated-by=字符串：设置每行数据结尾的字符，可以为单个或多个字符，默认值为“\n”。
+		--ignore-lines=n：表示可以忽略前n行。
+
+
+
+
+
+#--------------------------------------------------------------------------------------#
+
+数据库表的结构和数据的导入导出
+使用mysqldump:  mysqldump命令位于mysql/bin/目录中
+
+导出:
+mysqldump -u root(用户) -p mysql(密码) database(数据库名) table1(表1) table2(表2) > c:\foo.sql 
+把指定的数据库中的表1和表2 导出到foo.sql文件中(保存的是sql语句)
+
+导入:
+mysqldump -u root -p mysql database(数据库名) > c:\foo.sql 
+
+	1.导出整个数据库 
+
+	mysqldump -u用户名 -p密码  数据库名 > 导出的文件名 
+　　C:\Users\jack> mysqldump -uroot -pmysql sva_rec  > e:\sva_rec.sql 
+
+　　2.导出一个表，包括表结构和数据 
+
+　　mysqldump -u用户名 -p 密码  数据库名 表名> 导出的文件名 
+　　C:\Users\jack> mysqldump -uroot -pmysql sva_rec date_rec_drv> e:\date_rec_drv.sql 
+
+　　3.导出一个数据库结构 
+　　C:\Users\jack> mysqldump -uroot -pmysql -d sva_rec > e:\sva_rec.sql 
+
+	4.导出一个表，只有表结构 
+
+　　mysqldump -u用户名 -p 密码 -d数据库名  表名> 导出的文件名 
+　　C:\Users\jack> mysqldump -uroot -pmysql -d sva_rec date_rec_drv> e:\date_rec_drv.sql 
+
+　　5.导入数据库 
+
+　　常用source 命令 
+　　进入mysql数据库控制台， 
+　　如mysql -u root -p 
+　　mysql>use 数据库 
+　　然后使用source命令，后面参数为脚本文件(如这里用到的.sql) 
+　　mysql>source d:wcnc_db.sql
+
+

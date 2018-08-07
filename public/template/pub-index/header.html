@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>{$site_name}</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	
+
+	<link rel="stylesheet" type="text/css" href="__CSS__/H-ui.reset.css">
+	{load href="/static/ext/bootstrap-3.3.7-dist/css/bootstrap.min.css" /}
+	
+	{css href="/static/ext/font-awesome-3.2.1/css/font-awesome.min.css" /}
+	<!--[if IE 7]>
+		{css href="/static/ext/font-awesome-3.2.1/css/font-awesome-ie7.min.css" /}
+	<![endif]-->
+	{load href="/static/css/nav_custom.css" /}
+
+	{js href="__PLUGINS__/jquery/jquery-1.10.2-mini.js" /}
+</head>
+<body>
+	<!--[if lt IE 9]>
+	<div class="browser-happy">
+	    <div class="content">
+	        <p>您的浏览器版本较低，为了更好的体验建议您更新后使用！</p>
+	        <p>本站不支持IE9以下浏览器访问！</p>
+	        <a href="http://browsehappy.com/">立即更新</a>
+	        <img src="http://jquery.cuishifeng.cn/images/logo_4fa80ea.jpg" alt="logo" style="display: none;">
+	    </div>
+	</div>
+	<![endif]-->
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">
+					<img class="logo-img" src="__IMAGES__/BR_logo2.png" alt="bres">
+				</a>
+			</div>	
+
+			<div id="navbar" class="collapse navbar-collapse">
+				{if condition="($user_data) eq 0"}
+				<ul class="nav navbar-nav nav-user-before" id="nav-user-before">
+					<li id="login"><a href="#"  >登录</a></li>
+					<li><span class="separator-ver">|</span></li>
+					<li id="sign"><a href="#" >注册</a></li>
+				</ul>
+				{else /}	
+				<ul class="nav navbar-nav nav-user-after" id="nav-user-after">
+					<li id="userinfo-list">
+						<a href="#"  id="userlist" data-id="{$user_data.id}">
+							<i class="separator-ver icon-reorder">&ensp;</i>
+						{$user_data.nickname}
+					</a>
+					</li>
+				</ul>
+				{/if}
+				<ul class="nav navbar-nav nav-menus">
+					<li class="active"><a href="/" data-title="Home">Home</a></li>
+					<li ><a href="#Leisure" data-title="Leisure">Leisure</a></li>
+					<li><a href="#about" data-title="About">About</a></li>
+					<li><a href="#contact" data-title="Contact">Contact</a></li>
+				</ul>
+				<div class="nav navbar-nav nav-search" id="nav-search">
+					<input type="text" name="search-val" class="form-search" placeholder="search">
+					<i class="icon-search btn-p"></i>
+				</div>
+	        </div>
+		</div>
+	</nav>
+
+	

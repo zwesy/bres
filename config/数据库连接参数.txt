@@ -1,0 +1,26 @@
+
+参数名	描述	默认值
+type	数据库类型	无
+hostname	数据库地址	127.0.0.1
+database	数据库名称	无
+username	数据库用户名	无
+password	数据库密码	无
+hostport	数据库端口号	无
+dsn	数据库连接dsn信息	无
+params	数据库连接参数	空
+charset	数据库编码	utf8
+prefix	数据库的表前缀	无
+debug	是否调试模式	false
+deploy	数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)	0
+rw_separate	数据库读写是否分离 主从式有效	false
+master_num	读写分离后 主服务器数量	1
+slave_no	指定从服务器序号	无
+fields_strict	是否严格检查字段是否存在	true
+resultset_type	数据集返回类型	array
+auto_timestamp	自动写入时间戳字段	false
+sql_explain	是否需要进行SQL性能分析 开启调试有效	false
+query	指定查询对象	think\db\Query
+builder	指定数据库Builder对象	无
+
+
+常用数据库连接参数（params）可以参考PHP在线手册中的以PDO::ATTR_开头的常量。
